@@ -1,0 +1,161 @@
+---
+import "/src/css/general.css";
+import Mainlayout from "../layouts/Mainlayout.astro";
+import Card from "../components/Card.astro";
+
+const data = await fetch(
+  "https://uiovvvgmjftrkbiogyqx.supabase.co/rest/v1/products?order=brand_front.asc",
+  {
+    method: "GET",
+    headers: {
+      // Fetch data fra API'en asynkront og gem det i variablen 'data'
+      // await = vent med loade siden indtil dataen er hentet
+      apikey:
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVpb3Z2dmdtamZ0cmtiaW9neXF4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDExMTU1MzUsImV4cCI6MjAxNjY5MTUzNX0.K1gnnZYV5aWSc4jzhiX1H2-WIcr2JXnmrj1BylbJRf0",
+    },
+  }
+).then(res => res.json());
+// Metadata til SEO
+const metadesc = "Opdag unikt vintage tøj – Køb og sælg secondhand online! Find kjoler, støvler, sko og mere."
+---
+
+
+<!-- // Layout og indhold -->
+
+<Mainlayout title="SHOP" metadesc={metadesc}>
+
+    <!-- Filtrering af produkter i kategorier -->
+  <div class="filter">
+    <a class="filterbutton active" data-filter="all">All</a>
+    <!-- HTML til filtering af kategorier -->
+    <span class="separator">|</span>
+    <a class="filterbutton" data-filter="top">Top</a>
+    <span class="separator">|</span>
+    <a class="filterbutton" data-filter="bottom">Bottom</a>
+    <span class="separator">|</span>
+    <a class="filterbutton" data-filter="accessories">Accessories</a>
+  </div>
+
+<!-- Card-komponent for hvert produkt -->
+    <section class="grid-container" id="articles-container">
+      {data.map((item) => (
+        <Card data={item} key={item.id} />
+      ))}
+    </section>
+
+    <!-- data.map er alt fra superbase og kalder item -->
+
+<!-- JavaScript til filtrering af kategorier -->
+  <script>
+    // Vælg alle elementer med klassen "filterbutton" 
+    const btns = document.querySelectorAll(".filterbutton");
+    btns.forEach((btn) => {
+      // Tilføj en eventslistener til hver knap og kald filterBy-funktionen
+      btn.addEventListener("click", () => filterBy(btn));
+    });
+
+      // Funktion (filterBy) til at filtrere og vise/skjule artikler baseret på det valgte filter
+      
+    function filterBy(clickedBtn) {
+      // Fjern 'active' klassen fra alle knapper
+      btns.forEach((btn) => btn.classList.remove("active"));
+
+      // Tilføj 'active' klassen til den klikkede knap
+      clickedBtn.classList.add("active");
+
+      // Filtrer artikler baseret på det valgte filter
+      const cat = clickedBtn.dataset.filter;
+      document.querySelectorAll("article.grid-item").forEach((art) => {
+        // her vælges / filteres kategorierne
+        if (art.dataset.category === cat || cat === "all") {
+          art.classList.remove("hide");
+        // Hvis cat = all, skal der fjernes "hide" og alle kategorier er synlige
+        } else {
+          art.classList.add("hide");
+          // Ellers skal du vise den kategori, som er trykket på 
+        }
+      });
+    }
+  </script>
+
+
+<style>
+
+  /* Styling for den valgte filtreringsknap */
+.filterbutton.active {
+  color: var(--cta-text);
+  border-bottom: 1px solid var(--cta-text);
+}
+
+  /* id til javascript */
+  .hide {
+    display: none;
+  }
+ 
+
+  /* filter mobil */
+  .filter {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    text-decoration: none;
+    overflow: hidden;
+    margin: 5px 0;
+    display: flex;
+    justify-content: center;
+    cursor: pointer;
+  }
+
+  .grid-container {
+    display: grid;
+    grid-template-columns: 1fr;
+    padding-bottom: 100px;
+  }
+  .grid-item {
+    text-align: center;
+    padding: 10px;
+    background-color: var(--background-color);
+  }
+
+  .image {
+    width: 100%;
+    height: auto;
+    scale: 100%;
+  }
+
+  
+  .filterbutton:hover {
+    cursor: pointer;
+  }
+
+  .filterbutton {
+    position: relative;
+    display: inline-block;
+    text-transform: uppercase;
+    text-decoration: none;
+    font-size: 13px;
+    overflow: hidden;
+    letter-spacing: 1.5px;
+    padding: 10px;
+  }
+
+  @media screen and (min-width: 767px) {
+
+    .grid-container {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      padding-bottom: 100px;
+      gap: 40px;
+      margin: 0 auto;
+      padding-left: 80px;
+      padding-right: 80px;
+      padding-top: 25px;
+    }
+    .filterbutton {
+      padding: 10px;
+      font-size: 15px;
+      margin: 5px 0;
+    }
+  
+  }
+</style>
