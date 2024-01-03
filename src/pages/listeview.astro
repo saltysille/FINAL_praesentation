@@ -108,7 +108,7 @@ const metadesc = "Opdag unikt vintage tøj – Køb og sælg secondhand online! 
 
   .grid-container {
     display: grid;
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr 1fr;
     padding-bottom: 100px;
   }
   .grid-item {
@@ -118,9 +118,8 @@ const metadesc = "Opdag unikt vintage tøj – Køb og sælg secondhand online! 
   }
 
   .image {
-    width: 100%;
-    height: auto;
-    scale: 100%;
+    width: 150%;
+    aspect-ratio: 0.8/1; /* SATTE aspect ratio for at gøre billederne mere responsiv */
   }
 
   
